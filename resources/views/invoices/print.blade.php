@@ -192,11 +192,7 @@
           <div class="section-title">Remarks</div>
           <div class="mb-3">{{ $invoice->remarks }}</div>
         @endif
-
-        {{-- @if($invoice->terms_text)
-          <div class="section-title">Terms</div>
-          <div class="mb-3">{{  }}</div>
-        @endif --}}
+        
         @php
           $grand = (float)($invoice->outstanding ?? 0);
           if ($grand <= 0) { $grand = (float)($invoice->total_amount ?? 0); }
