@@ -263,6 +263,31 @@
                 $el.select2({ theme: 'bootstrap4', width: '100%' });
             });
         }
+
+        // Show validation errors via SweetAlert
+        @if($errors->any())
+        try {
+            const messages = @json($errors->all());
+            const html = '<ul style="text-align:left; margin:0; padding-left:18px;">' + messages.map(m => `<li>${m}</li>`).join('') + '</ul>';
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                html: html,
+            });
+        } catch(e) { /* no-op */ }
+        @endif
+
+        // Optional: success toast
+        @if(session('status'))
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            timer: 2000,
+            showConfirmButton: false,
+            icon: 'success',
+            title: '{{ ucfirst(str_replace('-', ' ', session('status'))) }}'
+        });
+        @endif
     });
     </script>
     @stack('scripts')

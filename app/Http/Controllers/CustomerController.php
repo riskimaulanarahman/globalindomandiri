@@ -57,6 +57,11 @@ class CustomerController extends Controller
             $validated['code'] = app(\App\Services\DocumentNumberService::class)->nextCustomerCode($branch);
         }
 
+        // Default TOP to 0 to avoid NULL insert on NOT NULL column
+        if (!array_key_exists('payment_term_days', $validated) || $validated['payment_term_days'] === null || $validated['payment_term_days'] === '') {
+            $validated['payment_term_days'] = 0;
+        }
+
         $contacts = $validated['contacts'] ?? [];
         unset($validated['contacts']);
 
@@ -87,6 +92,11 @@ class CustomerController extends Controller
             'contacts.*.is_default' => ['nullable','boolean'],
             'contacts.*.notes' => ['nullable','string','max:1000'],
         ]);
+
+        // Default TOP to 0 to avoid NULL update on NOT NULL column
+        if (!array_key_exists('payment_term_days', $validated) || $validated['payment_term_days'] === null || $validated['payment_term_days'] === '') {
+            $validated['payment_term_days'] = 0;
+        }
 
         $contacts = $validated['contacts'] ?? [];
         unset($validated['contacts']);
