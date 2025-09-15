@@ -107,7 +107,7 @@
           <tr><td><strong>PO No</strong></td><td class="text-right mono">{{ $invoice->po_no ?: '—' }}</td></tr>
           <tr><td><strong>Tanggal Terbit</strong></td><td class="text-right mono">{{ $invoice->invoice_date?->format('Y-m-d') ?: '—' }}</td></tr>
           <tr><td><strong>Jatuh Tempo</strong></td><td class="text-right mono">{{ $invoice->due_date?->format('Y-m-d') ?: '—' }}</td></tr>
-          <tr><td><strong>Term</strong></td><td class="text-right mono">{{ $invoice->top_days ? ('TOP '.$invoice->top_days.' days') : 'Cash' }}</td></tr>
+          <tr><td><strong>Term Of Payment</strong></td><td class="text-right mono">{{ $invoice->terms_text ? $invoice->terms_text : 'Cash' }}</td></tr>
         </table>
       </div>
     </div>
@@ -193,10 +193,10 @@
           <div class="mb-3">{{ $invoice->remarks }}</div>
         @endif
 
-        @if($invoice->terms_text)
+        {{-- @if($invoice->terms_text)
           <div class="section-title">Terms</div>
-          <div class="mb-3">{{ $invoice->terms_text }}</div>
-        @endif
+          <div class="mb-3">{{  }}</div>
+        @endif --}}
         @php
           $grand = (float)($invoice->outstanding ?? 0);
           if ($grand <= 0) { $grand = (float)($invoice->total_amount ?? 0); }

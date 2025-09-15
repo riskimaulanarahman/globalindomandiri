@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\DocumentSequence;
 use App\Models\Invoice;
+use App\Models\PaymentTerm;
 use App\Models\InvoiceLine;
 use App\Models\Shipment;
 use Illuminate\Http\RedirectResponse;
@@ -41,7 +42,8 @@ class InvoiceController extends Controller
     {
         $invoice = new Invoice(['status' => 'Draft', 'invoice_date' => now()->toDateString()]);
         $customers = Customer::orderBy('name')->get();
-        return view('invoices.create', compact('invoice','customers'));
+        $paymentTerms = PaymentTerm::where('is_active', 1)->orderBy('name')->get();
+        return view('invoices.create', compact('invoice','customers','paymentTerms'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -71,6 +73,7 @@ class InvoiceController extends Controller
     {
         $invoice->load(['customer','lines.shipment','payments']);
         $customers = Customer::orderBy('name')->get();
+        $paymentTerms = PaymentTerm::where('is_active', 1)->orderBy('name')->get();
         // eligible shipments: same customer and not already in invoice lines
         $eligibleShipments = Shipment::where('customer_id', $invoice->customer_id)
             ->whereNotIn('id', InvoiceLine::select('shipment_id'))
@@ -78,7 +81,7 @@ class InvoiceController extends Controller
             ->limit(50)
             ->get();
         $statuses = ['Draft','Sent','Partially Paid','Paid','Overdue'];
-        return view('invoices.edit', compact('invoice','customers','eligibleShipments','statuses'));
+        return view('invoices.edit', compact('invoice','customers','eligibleShipments','statuses','paymentTerms'));
     }
 
     public function update(Request $request, Invoice $invoice): RedirectResponse

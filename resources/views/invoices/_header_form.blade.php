@@ -44,7 +44,17 @@
     </div>
     <div class="form-group col-md-6">
       <label for="terms_text">Terms</label>
-      <input type="text" id="terms_text" name="terms_text" class="form-control @error('terms_text') is-invalid @enderror" value="{{ old('terms_text',$invoice->terms_text) }}">
+      <select id="terms_text" name="terms_text" class="form-control select2 @error('terms_text') is-invalid @enderror">
+        <option value="">-- Select Payment Term --</option>
+        @php($currentTerms = old('terms_text', $invoice->terms_text))
+        @php($names = collect($paymentTerms ?? [])->pluck('name')->all())
+        @if($currentTerms && !in_array($currentTerms, $names ?? []))
+          <option value="{{ $currentTerms }}" selected>{{ $currentTerms }}</option>
+        @endif
+        @foreach(($paymentTerms ?? []) as $pt)
+          <option value="{{ $pt->name }}" {{ $currentTerms === $pt->name ? 'selected' : '' }}>{{ $pt->name }}</option>
+        @endforeach
+      </select>
       @error('terms_text')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
   </div>
